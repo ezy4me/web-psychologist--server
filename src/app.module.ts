@@ -8,7 +8,13 @@ import { PsychologistModule } from './modules/psychologist/psychologist.module';
 import { DatabaseModule } from './database/database.module';
 
 @Module({
-  imports: [AuthModule, UserModule, ArticleModule, PsychologistModule, DatabaseModule],
+  imports: [
+    AuthModule,
+    UserModule,
+    ArticleModule,
+    PsychologistModule,
+    DatabaseModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
