@@ -1,0 +1,154 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  password String
+  role     String
+
+  profile      Profile?
+  Psychologist Psychologist?
+  UserTest     UserTest[]
+  Chat         Chat[]
+  Message      Message[]
+}
+
+model Profile {
+  id          Int    @id @default(autoincrement())
+  name        String
+  phone       String
+  gender      String
+  birthday    String
+  description String
+  image       String
+  userId      Int    @unique
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Psychologist {
+  id            Int    @id @default(autoincrement())
+  education     String
+  qualification String
+  experience    String
+  userId        Int    @unique
+  user          User   @relation(fields: [userId], references: [id])
+
+  article           Article[]
+  PsychologistFiles PsychologistFiles[]
+  Test              Test[]
+  Chat              Chat[]
+}
+
+model PsychologistFiles {
+  id          Int    @id @default(autoincrement())
+  fileName    String @unique
+  description String
+
+  psychologistId Int
+  Psychologist   Psychologist @relation(fields: [psychologistId], references: [id])
+}
+
+model Article {
+  id             Int          @id @default(autoincrement())
+  title          String
+  subtitle       String
+  description    String
+  isApproved     Boolean
+  createdAt      DateTime     @default(now())
+  image          String
+  psychologistId Int
+  psychologist   Psychologist @relation(fields: [psychologistId], references: [id])
+}
+
+model Test {
+  id             Int            @id @default(autoincrement())
+  title          String
+  subtitle       String
+  description    String
+  isApproved     Boolean
+  createdAt      DateTime       @default(now())
+  image          String
+  psychologistId Int
+  psychologist   Psychologist   @relation(fields: [psychologistId], references: [id])
+  TestQuestion   TestQuestion[]
+  Result         Result[]
+  UserTest       UserTest[]
+}
+
+model Answer {
+  id    Int    @id @default(autoincrement())
+  text  String
+  score Float
+
+  questionId Int
+  question   Question @relation(fields: [questionId], references: [id])
+}
+
+model Question {
+  id           Int            @id @default(autoincrement())
+  text         String
+  Answer       Answer[]
+  TestQuestion TestQuestion[]
+}
+
+model TestQuestion {
+  id         Int      @id @default(autoincrement())
+  testId     Int
+  test       Test     @relation(fields: [testId], references: [id])
+  questionId Int
+  question   Question @relation(fields: [questionId], references: [id])
+}
+
+model Result {
+  id       Int        @id @default(autoincrement())
+  text     String
+  minScore Float
+  maxScore Float
+  testId   Int
+  test     Test       @relation(fields: [testId], references: [id])
+  UserTest UserTest[]
+}
+
+model UserTest {
+  id       Int    @id @default(autoincrement())
+  userId   Int
+  user     User   @relation(fields: [userId], references: [id])
+  testId   Int
+  test     Test   @relation(fields: [testId], references: [id])
+  resultId Int
+  result   Result @relation(fields: [resultId], references: [id])
+}
+
+model Chat {
+  id             Int          @id @default(autoincrement())
+  psychologistId Int
+  psychologist   Psychologist @relation(fields: [psychologistId], references: [id])
+  userId         Int
+  user           User         @relation(fields: [userId], references: [id])
+  status         String
+  Message        Message[]
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  text      String
+  timestamp DateTime @default(now())
+  chatId    Int
+  chat      Chat     @relation(fields: [chatId], references: [id])
+  senderId  Int
+  sender    User     @relation(fields: [senderId], references: [id])
+}
