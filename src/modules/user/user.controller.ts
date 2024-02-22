@@ -15,20 +15,20 @@ import { UserResponse } from './response';
 import { CurrentUser } from '@common/decorators';
 import { JwtPayload } from '@modules/auth/interfaces';
 
-@Controller('users')
+@Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Post()
-  async createUser(@Body() dto: CreateUserDto) {
+  async create(@Body() dto: CreateUserDto) {
     const user = await this.userService.save(dto);
     return new UserResponse(user);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
-  async findAllUsers() {
+  async findAll() {
     const users = await this.userService.findAll();
     const userResponses = users.map((user) => new UserResponse(user));
     return userResponses;
@@ -36,14 +36,21 @@ export class UserController {
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get(':email')
-  async findOneUser(@Param('email') email: string) {
+  async findOneByEmail(@Param('email') email: string) {
     const user = await this.userService.findOne(email);
     return new UserResponse(user);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
+  @Get(':id')
+  async findOneById(@Param('id') id: number) {
+    const user = await this.userService.findOneById(id);
+    return new UserResponse(user);
+  }
+
+  @UseInterceptors(ClassSerializerInterceptor)
   @Delete(':id')
-  async deleteUser(
+  async delete(
     @Param('id', ParseIntPipe) id: number,
     @CurrentUser() user: JwtPayload,
   ) {

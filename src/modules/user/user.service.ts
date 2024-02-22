@@ -27,12 +27,19 @@ export class UserService {
   }
 
   async findAll(): Promise<User[]> {
-    return this.databaseService.user.findMany();
+    return this.databaseService.user.findMany({
+      include: {
+        role: { select: { name: true } },
+      },
+    });
   }
 
   async findOneById(id: number): Promise<User> {
     return this.databaseService.user.findUnique({
       where: { id },
+      include: {
+        role: { select: { name: true } },
+      },
     });
   }
 
@@ -45,6 +52,9 @@ export class UserService {
     if (!user) {
       const user = await this.databaseService.user.findUnique({
         where: { email },
+        include: {
+          role: { select: { name: true } },
+        },
       });
       if (!user) {
         return null;
