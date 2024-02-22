@@ -17,6 +17,7 @@ import { AnswerModule } from './modules/answer/answer.module';
 import { QuestionModule } from './modules/question/question.module';
 import { TestQuestionModule } from './modules/test-question/test-question.module';
 import { ResultModule } from './modules/result/result.module';
+import { ProfileModule } from './modules/profile/profile.module';
 @Module({
   imports: [
     AuthModule,
@@ -34,6 +35,7 @@ import { ResultModule } from './modules/result/result.module';
     QuestionModule,
     TestQuestionModule,
     ResultModule,
+    ProfileModule,
   ],
   controllers: [AppController],
   providers: [
