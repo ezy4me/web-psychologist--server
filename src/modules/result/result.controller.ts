@@ -1,4 +1,46 @@
-import { Controller } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+} from '@nestjs/common';
+import { Result } from '@prisma/client';
+import { ResultService } from './result.service';
+import { CreateResultDto, UpdateResultDto } from './dto';
 
 @Controller('result')
-export class ResultController {}
+export class ResultController {
+  constructor(private readonly resultService: ResultService) {}
+
+  @Get()
+  async findAll(): Promise<Result[]> {
+    return this.resultService.findAll();
+  }
+
+  @Get(':id')
+  async findOneById(@Param('id', ParseIntPipe) id: number): Promise<Result> {
+    return this.resultService.findOneById(id);
+  }
+
+  @Post()
+  async create(@Body() dto: CreateResultDto): Promise<Result> {
+    return this.resultService.create(dto);
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateResultDto,
+  ): Promise<Result> {
+    return this.resultService.update(id, dto);
+  }
+
+  @Delete(':id')
+  async delete(@Param('id', ParseIntPipe) id: number): Promise<Result> {
+    return this.resultService.delete(id);
+  }
+}
