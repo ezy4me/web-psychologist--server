@@ -15,6 +15,7 @@ import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { Cookie, Public, UserAgent } from '@common/decorators';
 import { UserResponse } from '@modules/user/response';
+import { User } from '@prisma/client';
 
 const REFRESH_TOKEN = 'refreshtoken';
 
@@ -47,12 +48,13 @@ export class AuthController {
     @UserAgent() agent: string,
   ) {
     const tokens = await this.authService.login(dto, agent);
+
     if (!tokens) {
       throw new BadRequestException(
         `Не удалось войти с данными ${JSON.stringify(dto)}`,
       );
     }
-    this.setRefreshTokenToCookies(tokens, res);
+    this.setRefreshTokenToCookies(tokens.tokens, res, tokens.user);
   }
 
   @Get('logout')
@@ -91,7 +93,7 @@ export class AuthController {
     this.setRefreshTokenToCookies(tokens, res);
   }
 
-  private setRefreshTokenToCookies(tokens: Tokens, res: Response) {
+  private setRefreshTokenToCookies(tokens: Tokens, res: Response, user?: User) {
     if (!tokens) {
       throw new UnauthorizedException();
     }
@@ -106,6 +108,7 @@ export class AuthController {
     res.status(HttpStatus.CREATED).json({
       accesToken: tokens.accesToken,
       refreshToken: tokens.refreshToken,
+      user: user,
     });
   }
 }

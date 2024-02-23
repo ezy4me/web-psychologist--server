@@ -61,4 +61,8 @@ export class ProfileService {
       where: { id },
     });
   }
+
+  async findByUserId(userId: number): Promise<Profile> {
+    return this.databaseService.profile.findFirst({ where: { userId } });
+  }
 }

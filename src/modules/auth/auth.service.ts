@@ -67,7 +67,10 @@ export class AuthService {
     });
   }
 
-  async login(dto: LoginDto, agent: string): Promise<Tokens> {
+  async login(
+    dto: LoginDto,
+    agent: string,
+  ): Promise<{ tokens: Tokens; user: User }> {
     const user: User = await this.userService
       .findOne(dto.email, true)
       .catch((err) => {
@@ -79,7 +82,9 @@ export class AuthService {
       throw new UnauthorizedException('Неверный логин или пароль!');
     }
 
-    return this.generateTokens(user, agent);
+    const tokens = await this.generateTokens(user, agent);
+
+    return { tokens, user };
   }
 
   private async generateTokens(user: User, agent: string): Promise<Tokens> {

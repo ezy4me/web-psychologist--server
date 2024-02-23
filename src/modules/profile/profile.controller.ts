@@ -43,4 +43,11 @@ export class ProfileController {
   async delete(@Param('id', ParseIntPipe) id: number): Promise<Profile> {
     return this.profileService.delete(id);
   }
+
+  @Get('user/:userId')
+  async findByUserId(
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<Profile> {
+    return this.profileService.findByUserId(userId);
+  }
 }

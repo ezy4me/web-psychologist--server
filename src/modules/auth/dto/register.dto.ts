@@ -2,7 +2,6 @@ import { IsPasswordMatchingConstraint } from '@common/decorators';
 import {
   IsEmail,
   IsNumber,
-  IsPhoneNumber,
   IsString,
   MinLength,
   Validate,
@@ -13,27 +12,13 @@ export class RegisterDto {
   email: string;
 
   @IsString()
-  @MinLength(6)
+  @MinLength(5)
   password: string;
 
   @IsString()
-  @MinLength(6)
+  @MinLength(5)
   @Validate(IsPasswordMatchingConstraint)
   passwordRepeat: string;
-
-  @IsString()
-  firstName: string;
-
-  @IsString()
-  lastName: string;
-
-  @IsString()
-  gender: string;
-
-  birtday: Date;
-
-  @IsPhoneNumber()
-  phone: string;
 
   @IsNumber()
   roleId: number;

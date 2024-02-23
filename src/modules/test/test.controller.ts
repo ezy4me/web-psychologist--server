@@ -11,11 +11,13 @@ import {
 import { TestService } from './test.service';
 import { CreateTestDto, UpdateTestDto } from './dto';
 import { Test } from '@prisma/client';
+import { Public } from '@common/decorators';
 
 @Controller('test')
 export class TestController {
   constructor(private readonly testService: TestService) {}
 
+  @Public()
   @Get()
   async findAll(): Promise<Test[]> {
     return this.testService.findAll();
