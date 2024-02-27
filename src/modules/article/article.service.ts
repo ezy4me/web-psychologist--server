@@ -28,6 +28,19 @@ export class ArticleService {
   async findOneById(id: number): Promise<Article> {
     const article = await this.databaseService.article.findUnique({
       where: { id },
+      include: {
+        psychologist: {
+          select: {
+            user: {
+              select: {
+                profile: {
+                  select: { name: true, image: true },
+                },
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!article) {

@@ -8,12 +8,45 @@ export class PsychologistService {
   constructor(private readonly databaseService: DatabaseService) {}
 
   async findAll(): Promise<Psychologist[]> {
-    return this.databaseService.psychologist.findMany();
+    return this.databaseService.psychologist.findMany({
+      include: {
+        user: {
+          select: {
+            email: true,
+            profile: {
+              select: {
+                name: true,
+                phone: true,
+                gender: true,
+                birthday: true,
+                image: true,
+              },
+            },
+          },
+        },
+      },
+    });
   }
 
   async findOneById(id: number): Promise<Psychologist> {
     const psychologist = await this.databaseService.psychologist.findUnique({
       where: { id },
+      include: {
+        user: {
+          select: {
+            email: true,
+            profile: {
+              select: {
+                name: true,
+                phone: true,
+                gender: true,
+                birthday: true,
+                image: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!psychologist) {

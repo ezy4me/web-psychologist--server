@@ -23,6 +23,7 @@ export class ArticleController {
     return this.articleService.findAll();
   }
 
+  @Public()
   @Get(':id')
   async findOneById(@Param('id', ParseIntPipe) id: number): Promise<Article> {
     return this.articleService.findOneById(id);
