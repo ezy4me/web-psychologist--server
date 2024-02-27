@@ -28,6 +28,19 @@ export class TestService {
   async findOneById(id: number): Promise<Test> {
     const test = await this.databaseService.test.findUnique({
       where: { id },
+      include: {
+        psychologist: {
+          select: {
+            user: {
+              select: {
+                profile: {
+                  select: { name: true, image: true },
+                },
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!test) {

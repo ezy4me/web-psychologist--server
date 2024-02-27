@@ -1,4 +1,3 @@
-// test-question.controller.ts
 import {
   Controller,
   Get,
@@ -22,11 +21,11 @@ export class TestQuestionController {
     return this.testQuestionService.findAll();
   }
 
-  @Get(':id')
-  async findOneById(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<TestQuestion> {
-    return this.testQuestionService.findOneById(id);
+  @Get(':testId')
+  async findAllByTestId(
+    @Param('testId', ParseIntPipe) testId: number,
+  ): Promise<TestQuestion[]> {
+    return this.testQuestionService.findAllByTestId(testId);
   }
 
   @Post()

@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { Result } from '@prisma/client';
 import { ResultService } from './result.service';
@@ -24,6 +25,14 @@ export class ResultController {
   @Get(':id')
   async findOneById(@Param('id', ParseIntPipe) id: number): Promise<Result> {
     return this.resultService.findOneById(id);
+  }
+
+  @Get('test/:testId')
+  async findOneByTestId(
+    @Param('testId', ParseIntPipe) testId: number,
+    @Query('score', ParseIntPipe) score?: number,
+  ): Promise<Result> {
+    return this.resultService.findOneByTestId(testId, score);
   }
 
   @Post()

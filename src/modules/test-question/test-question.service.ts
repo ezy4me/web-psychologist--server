@@ -1,4 +1,3 @@
-// test-question.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { TestQuestion } from '@prisma/client';
 import { DatabaseService } from '@database/database.service';
@@ -10,6 +9,26 @@ export class TestQuestionService {
 
   async findAll(): Promise<TestQuestion[]> {
     return this.databaseService.testQuestion.findMany();
+  }
+
+  async findAllByTestId(testId: number): Promise<TestQuestion[]> {
+    const questions = await this.databaseService.testQuestion.findMany({
+      where: { testId },
+      include: {
+        test: { select: { title: true } },
+        question: {
+          include: {
+            Answer: true,
+          },
+        },
+      },
+    });
+
+    if (!questions) {
+      throw new NotFoundException(`Test questions with ID ${testId} not found`);
+    }
+
+    return questions;
   }
 
   async findOneById(id: number): Promise<TestQuestion> {

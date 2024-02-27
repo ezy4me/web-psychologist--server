@@ -23,6 +23,26 @@ export class ResultService {
     return result;
   }
 
+  async findOneByTestId(
+    testId: number,
+    score?: number,
+  ): Promise<Result | null> {
+    try {
+      const results = await this.databaseService.result.findMany({
+        where: { testId },
+      });
+
+      const result = results.find(
+        (r) => score >= r.minScore && score <= r.maxScore,
+      );
+
+      return result || null;
+    } catch (error) {
+      console.error('Ошибка при поиске результата:', error);
+      return null;
+    }
+  }
+
   async create(dto: CreateResultDto): Promise<Result> {
     return this.databaseService.result.create({
       data: {
