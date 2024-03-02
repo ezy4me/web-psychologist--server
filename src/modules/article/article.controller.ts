@@ -29,6 +29,13 @@ export class ArticleController {
     return this.articleService.findOneById(id);
   }
 
+  @Get('/user/:id')
+  async findAllByUserId(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Article[]> {
+    return this.articleService.findAllByUserId(id);
+  }
+
   @Post()
   async create(@Body() dto: CreateArticleDto): Promise<Article> {
     return this.articleService.create(dto);

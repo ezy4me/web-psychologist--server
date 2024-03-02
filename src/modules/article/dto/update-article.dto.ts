@@ -24,4 +24,8 @@ export class UpdateArticleDto {
   @ValidateIf((o) => o.psychologistId !== undefined)
   @IsNumber({}, { message: 'PsychologistId must be a number' })
   psychologistId: number;
+
+  @ValidateIf((o) => o.userId !== undefined)
+  @IsNumber({}, { message: 'UserId must be a number' })
+  userId?: number;
 }

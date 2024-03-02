@@ -56,6 +56,18 @@ export class PsychologistService {
     return psychologist;
   }
 
+  async findOneByUserId(id: number): Promise<Psychologist> {
+    const psychologist = await this.databaseService.psychologist.findUnique({
+      where: { userId: id },
+    });
+
+    if (!psychologist) {
+      throw new NotFoundException(`Psychologist with ID ${id} not found`);
+    }
+
+    return psychologist;
+  }
+
   async create(dto: CreatePsychologistDto): Promise<Psychologist> {
     return this.databaseService.psychologist.create({
       data: {
