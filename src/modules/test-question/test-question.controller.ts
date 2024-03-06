@@ -11,6 +11,7 @@ import {
 import { TestQuestion } from '@prisma/client';
 import { TestQuestionService } from './test-question.service';
 import { TestQuestionDto } from './dto/test-question.dto';
+import { Public } from '@common/decorators';
 
 @Controller('test-question')
 export class TestQuestionController {
@@ -21,6 +22,7 @@ export class TestQuestionController {
     return this.testQuestionService.findAll();
   }
 
+  @Public()
   @Get(':testId')
   async findAllByTestId(
     @Param('testId', ParseIntPipe) testId: number,

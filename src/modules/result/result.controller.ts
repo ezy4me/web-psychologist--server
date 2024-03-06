@@ -12,6 +12,7 @@ import {
 import { Result } from '@prisma/client';
 import { ResultService } from './result.service';
 import { CreateResultDto, UpdateResultDto } from './dto';
+import { Public } from '@common/decorators';
 
 @Controller('result')
 export class ResultController {
@@ -27,6 +28,7 @@ export class ResultController {
     return this.resultService.findOneById(id);
   }
 
+  @Public()
   @Get('test/:testId')
   async findOneByTestId(
     @Param('testId', ParseIntPipe) testId: number,

@@ -23,6 +23,7 @@ export class TestController {
     return this.testService.findAll();
   }
 
+  @Public()
   @Get(':id')
   async findOneById(@Param('id', ParseIntPipe) id: number): Promise<Test> {
     return this.testService.findOneById(id);
