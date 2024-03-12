@@ -54,7 +54,7 @@ model Profile {
   image       String
   userId      Int    @unique
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onUpdate: Cascade)
 }
 
 model Psychologist {
@@ -63,7 +63,7 @@ model Psychologist {
   qualification String
   experience    String
   userId        Int    @unique
-  user          User   @relation(fields: [userId], references: [id])
+  user          User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   article           Article[]
   PsychologistFiles PsychologistFiles[]
@@ -77,7 +77,7 @@ model PsychologistFiles {
   description String
 
   psychologistId Int
-  Psychologist   Psychologist @relation(fields: [psychologistId], references: [id])
+  Psychologist   Psychologist @relation(fields: [psychologistId], references: [id], onDelete: Cascade)
 }
 
 model Article {
@@ -89,7 +89,7 @@ model Article {
   createdAt      DateTime     @default(now())
   image          String
   psychologistId Int
-  psychologist   Psychologist @relation(fields: [psychologistId], references: [id])
+  psychologist   Psychologist @relation(fields: [psychologistId], references: [id], onDelete: Cascade)
 }
 
 model Test {
@@ -101,7 +101,7 @@ model Test {
   createdAt      DateTime       @default(now())
   image          String
   psychologistId Int
-  psychologist   Psychologist   @relation(fields: [psychologistId], references: [id])
+  psychologist   Psychologist   @relation(fields: [psychologistId], references: [id], onDelete: Cascade)
   TestQuestion   TestQuestion[]
   Result         Result[]
   UserTest       UserTest[]
@@ -113,7 +113,7 @@ model Answer {
   score Float
 
   questionId Int
-  question   Question @relation(fields: [questionId], references: [id])
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 }
 
 model Question {
@@ -126,9 +126,9 @@ model Question {
 model TestQuestion {
   id         Int      @id @default(autoincrement())
   testId     Int
-  test       Test     @relation(fields: [testId], references: [id])
+  test       Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
   questionId Int
-  question   Question @relation(fields: [questionId], references: [id])
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 }
 
 model Result {
@@ -137,18 +137,18 @@ model Result {
   minScore Float
   maxScore Float
   testId   Int
-  test     Test       @relation(fields: [testId], references: [id])
+  test     Test       @relation(fields: [testId], references: [id], onDelete: Cascade)
   UserTest UserTest[]
 }
 
 model UserTest {
   id       Int    @id @default(autoincrement())
   userId   Int
-  user     User   @relation(fields: [userId], references: [id])
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   testId   Int
-  test     Test   @relation(fields: [testId], references: [id])
+  test     Test   @relation(fields: [testId], references: [id], onDelete: Cascade)
   resultId Int
-  result   Result @relation(fields: [resultId], references: [id])
+  result   Result @relation(fields: [resultId], references: [id], onDelete: Cascade)
 }
 
 model Chat {

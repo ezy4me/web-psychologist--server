@@ -71,4 +71,12 @@ export class TestQuestionService {
       where: { id },
     });
   }
+
+  async deleteByTestId(testId: number): Promise<void> {
+    await this.databaseService.testQuestion.deleteMany({
+      where: {
+        testId: testId,
+      },
+    });
+  }
 }

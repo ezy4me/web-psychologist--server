@@ -1,4 +1,14 @@
-import { IsBoolean, IsNumber, IsString, ValidateIf } from 'class-validator';
+import {
+  IsBoolean,
+  IsNumber,
+  IsString,
+  ValidateIf,
+  IsArray,
+  ValidateNested,
+} from 'class-validator';
+import { Type } from 'class-transformer';
+import { QuestionDto } from './create-test.dto';
+import { CreateResultDto } from '@modules/result/dto';
 
 export class UpdateTestDto {
   @ValidateIf((o) => o.title !== undefined)
@@ -21,7 +31,22 @@ export class UpdateTestDto {
   @IsString({ message: 'Image must be a string' })
   image: string;
 
+  @ValidateIf((o) => o.userId !== undefined)
+  @IsNumber({}, { message: 'UserId must be a number' })
+  userId?: number;
+
   @ValidateIf((o) => o.psychologistId !== undefined)
   @IsNumber({}, { message: 'PsychologistId must be a number' })
   psychologistId: number;
+
+  @ValidateIf((o) => o.questions !== undefined)
+  @IsArray({ message: 'Questions must be an array' })
+  @ValidateNested({ each: true })
+  @Type(() => QuestionDto)
+  questions: QuestionDto[];
+
+  @ValidateIf((o) => o.results !== undefined)
+  @IsArray({ message: 'Results must be an array' })
+  @ValidateNested({ each: true })
+  results: CreateResultDto[];
 }

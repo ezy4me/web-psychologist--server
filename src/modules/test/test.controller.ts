@@ -29,6 +29,20 @@ export class TestController {
     return this.testService.findOneById(id);
   }
 
+  @Get('/data/:id')
+  async findOneByIdAllData(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Test> {
+    return this.testService.findOneByIdAllData(id);
+  }
+
+  @Get('/user/:id')
+  async findAllByUserId(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Test[]> {
+    return this.testService.findAllByUserId(id);
+  }
+
   @Post()
   async create(@Body() dto: CreateTestDto): Promise<Test> {
     return this.testService.create(dto);

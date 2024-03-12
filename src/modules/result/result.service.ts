@@ -54,6 +54,24 @@ export class ResultService {
     });
   }
 
+  async createMany(dto: CreateResultDto[]): Promise<Result[]> {
+    const results: Result[] = [];
+
+    for (const item of dto) {
+      const result = await this.databaseService.result.create({
+        data: {
+          text: item.text,
+          minScore: item.minScore,
+          maxScore: item.maxScore,
+          testId: item.testId,
+        },
+      });
+      results.push(result);
+    }
+
+    return results;
+  }
+
   async update(id: number, dto: UpdateResultDto): Promise<Result> {
     await this.findOneById(id);
 
@@ -74,5 +92,13 @@ export class ResultService {
       where: { id },
     });
     return result;
+  }
+
+  async deleteByTestId(testId: number): Promise<void> {
+    await this.databaseService.result.deleteMany({
+      where: {
+        testId: testId,
+      },
+    });
   }
 }
