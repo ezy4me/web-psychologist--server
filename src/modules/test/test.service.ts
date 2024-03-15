@@ -187,16 +187,6 @@ export class TestService {
       throw new NotFoundException(`Test with ID ${id} not found`);
     }
 
-    let psychologistId = dto.psychologistId;
-    if (dto.userId) {
-      const psychologist = await this.databaseService.psychologist.findUnique({
-        where: { userId: dto.userId },
-      });
-
-      psychologistId = psychologist.id;
-    }
-
-    // Обновление основной информации о тесте
     const updatedTest = await this.databaseService.test.update({
       where: { id },
       data: {
@@ -205,44 +195,49 @@ export class TestService {
         description: dto.description,
         isApproved: dto.isApproved,
         image: dto.image,
-        psychologistId: psychologistId,
+        psychologistId: dto.psychologistId,
       },
     });
 
-    await this.testQuestionService.deleteByTestId(id);
-    await this.resultService.deleteByTestId(id);
+    if (dto.questions) {
+      await this.testQuestionService.deleteByTestId(id);
 
-    for (const questionData of dto.questions) {
-      const newQuestion = await this.databaseService.question.create({
-        data: {
-          text: questionData.question,
-        },
-      });
-
-      for (let i = 0; i < questionData.options.length; i++) {
-        await this.databaseService.answer.create({
+      for (const questionData of dto.questions) {
+        const newQuestion = await this.databaseService.question.create({
           data: {
-            text: questionData.options[i],
-            score: questionData.points[i],
-            questionId: newQuestion.id,
+            text: questionData.question,
           },
         });
-      }
 
-      await this.testQuestionService.create({
-        testId: updatedTest.id,
-        questionId: newQuestion.id,
-      });
+        for (let i = 0; i < questionData.options.length; i++) {
+          await this.databaseService.answer.create({
+            data: {
+              text: questionData.options[i],
+              score: questionData.points[i],
+              questionId: newQuestion.id,
+            },
+          });
+        }
+
+        await this.testQuestionService.create({
+          testId: updatedTest.id,
+          questionId: newQuestion.id,
+        });
+      }
     }
 
-    await this.resultService.createMany(
-      dto.results.map((result) => ({
-        text: result.text,
-        minScore: result.minScore,
-        maxScore: result.maxScore,
-        testId: updatedTest.id,
-      })),
-    );
+    if (dto.results) {
+      await this.resultService.deleteByTestId(id);
+
+      await this.resultService.createMany(
+        dto.results.map((result) => ({
+          text: result.text,
+          minScore: result.minScore,
+          maxScore: result.maxScore,
+          testId: updatedTest.id,
+        })),
+      );
+    }
 
     return updatedTest;
   }
