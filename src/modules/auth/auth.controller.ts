@@ -8,7 +8,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { Body, Get, Post } from '@nestjs/common';
-import { LoginDto, RegisterDto } from './dto';
+import { LoginDto, PsychologistRegisterDto, RegisterDto } from './dto';
 import { AuthService } from './auth.service';
 import { Tokens } from './interfaces';
 import { Response } from 'express';
@@ -39,6 +39,19 @@ export class AuthController {
       );
     }
     return new UserResponse(user);
+  }
+
+  @Post('register/psychologist')
+  async registerPsychologist(@Body() dto: PsychologistRegisterDto) {
+    const psychologist = await this.authService.registerPsychologist(dto);
+    if (!psychologist) {
+      throw new BadRequestException(
+        `Не удалось зарегистрирвоать психолога с данными ${JSON.stringify(
+          dto,
+        )}`,
+      );
+    }
+    return new UserResponse(psychologist);
   }
 
   @Post('login')

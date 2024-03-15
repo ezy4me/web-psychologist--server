@@ -139,7 +139,7 @@ export class TestService {
         title: dto.title,
         subtitle: dto.subtitle,
         description: dto.description,
-        isApproved: dto.isApproved,
+        isApproved: false,
         image: dto.image,
         psychologistId: psychologistId,
       },

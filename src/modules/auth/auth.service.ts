@@ -4,7 +4,7 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
-import { LoginDto, RegisterDto } from './dto';
+import { LoginDto, PsychologistRegisterDto, RegisterDto } from './dto';
 import { UserService } from '@modules/user/user.service';
 import { Tokens } from './interfaces';
 import { compareSync } from 'bcrypt';
@@ -13,12 +13,16 @@ import { JwtService } from '@nestjs/jwt';
 import { DatabaseService } from 'src/database/database.service';
 import { v4 } from 'uuid';
 import { add } from 'date-fns';
+import { PsychologistService } from '@modules/psychologist/psychologist.service';
+import { ProfileService } from '@modules/profile/profile.service';
 
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
   constructor(
     private readonly userService: UserService,
+    private readonly psychologistService: PsychologistService,
+    private readonly profileService: ProfileService,
     private readonly databaseService: DatabaseService,
     private readonly jwtService: JwtService,
   ) {}
@@ -65,6 +69,46 @@ export class AuthService {
       this.logger.error(err);
       return null;
     });
+  }
+
+  async registerPsychologist(dto: PsychologistRegisterDto) {
+    const userEmail: User = await this.userService
+      .findOne(dto.email)
+      .catch((err) => {
+        this.logger.error(err);
+        return null;
+      });
+
+    if (userEmail) {
+      throw new ConflictException(
+        'Пользователь с таким email уже зарегистрирован',
+      );
+    }
+
+    const user: User = await this.userService.save(dto).catch((err) => {
+      this.logger.error(err);
+      return null;
+    });
+
+    await this.psychologistService.create({
+      education: dto.education,
+      qualification: dto.qualification,
+      experience: dto.experience,
+      userId: user.id,
+    });
+
+    await this.profileService.create({
+      name: dto.profile.name,
+      birthday: dto.profile.birthday,
+      description: dto.profile.description,
+      phone: dto.profile.phone,
+      gender: dto.profile.gender,
+      image:
+        'https://images.wallpaperscraft.ru/image/single/baran_sledy_kudriavyj_66214_1920x1080.jpg',
+      userId: user.id,
+    });
+
+    return user;
   }
 
   async login(

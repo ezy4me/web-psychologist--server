@@ -96,7 +96,7 @@ export class ArticleService {
         title: dto.title,
         subtitle: dto.subtitle,
         description: dto.description,
-        isApproved: dto.isApproved || false,
+        isApproved: false,
         image: dto.image,
         psychologistId: psychologistId,
       },
