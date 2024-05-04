@@ -17,13 +17,29 @@ export class UserService {
 
   async save(user: Partial<User>): Promise<User> {
     const hashedPassword = this.hashPassword(user.password);
-    return this.databaseService.user.create({
+    const _user = await this.databaseService.user.create({
       data: {
         email: user.email,
         password: hashedPassword,
         roleId: user.roleId,
       },
     });
+
+    if (_user) {
+      await this.databaseService.profile.create({
+        data: {
+          name: '',
+          phone: '',
+          gender: '',
+          birthday: '',
+          description: '',
+          image: '',
+          userId: _user.id,
+        },
+      });
+    }
+
+    return _user;
   }
 
   async findAll(): Promise<User[]> {

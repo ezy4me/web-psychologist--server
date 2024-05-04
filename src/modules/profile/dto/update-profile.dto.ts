@@ -1,4 +1,4 @@
-import { IsDateString, IsNumber, IsString, ValidateIf } from 'class-validator';
+import { IsNumber, IsString, ValidateIf } from 'class-validator';
 
 export class UpdateProfileDto {
   @ValidateIf((o) => o.name !== undefined)
@@ -14,7 +14,7 @@ export class UpdateProfileDto {
   gender: string;
 
   @ValidateIf((o) => o.birthday !== undefined)
-  @IsDateString({}, { message: 'Birthday must be a Date' })
+  @IsString({ message: 'Birthday must be a Date' })
   birthday: string;
 
   @ValidateIf((o) => o.description !== undefined)

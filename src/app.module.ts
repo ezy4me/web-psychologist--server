@@ -18,6 +18,7 @@ import { QuestionModule } from './modules/question/question.module';
 import { TestQuestionModule } from './modules/test-question/test-question.module';
 import { ResultModule } from './modules/result/result.module';
 import { ProfileModule } from './modules/profile/profile.module';
+import { ChatModule } from './chat/chat.module';
 @Module({
   imports: [
     AuthModule,
@@ -36,6 +37,7 @@ import { ProfileModule } from './modules/profile/profile.module';
     TestQuestionModule,
     ResultModule,
     ProfileModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [

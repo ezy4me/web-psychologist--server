@@ -24,8 +24,10 @@ model User {
   profile      Profile?
   Psychologist Psychologist?
   UserTest     UserTest[]
-  Chat         Chat[]
-  Message      Message[]
+
+  Message Message[]
+
+  chatAsPatient Chat[] @relation("PatientChat")
 
   token Token[]
 }
@@ -65,10 +67,10 @@ model Psychologist {
   userId        Int    @unique
   user          User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  article           Article[]
-  PsychologistFiles PsychologistFiles[]
-  Test              Test[]
-  Chat              Chat[]
+  article            Article[]
+  PsychologistFiles  PsychologistFiles[]
+  Test               Test[]
+  chatAsPsychologist Chat[]              @relation("PsychologistChat")
 }
 
 model PsychologistFiles {
@@ -152,21 +154,34 @@ model UserTest {
 }
 
 model Chat {
-  id             Int          @id @default(autoincrement())
+  id Int @id @default(autoincrement())
+
+  status Boolean
+
+  psychologist   Psychologist @relation("PsychologistChat", fields: [psychologistId], references: [id], onDelete: Cascade)
   psychologistId Int
-  psychologist   Psychologist @relation(fields: [psychologistId], references: [id])
-  userId         Int
-  user           User         @relation(fields: [userId], references: [id])
-  status         String
-  Message        Message[]
+
+  patient     User          @relation("PatientChat", fields: [patientId], references: [id], onDelete: Cascade)
+  patientId   Int
+  chatHistory ChatHistory[]
+}
+
+model ChatHistory {
+  id Int @id @default(autoincrement())
+
+  message   Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  messageId Int     @unique
+  chat      Chat    @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  chatId    Int
 }
 
 model Message {
-  id        Int      @id @default(autoincrement())
-  text      String
-  timestamp DateTime @default(now())
-  chatId    Int
-  chat      Chat     @relation(fields: [chatId], references: [id])
-  senderId  Int
-  sender    User     @relation(fields: [senderId], references: [id])
+  id Int @id @default(autoincrement())
+
+  text     String
+  dateTime DateTime
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      Int
+  chatHistory ChatHistory?
 }

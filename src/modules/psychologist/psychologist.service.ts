@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Psychologist } from '@prisma/client';
+import { Chat, Psychologist } from '@prisma/client';
 import { DatabaseService } from '@database/database.service';
 import { CreatePsychologistDto, UpdatePsychologistDto } from './dto';
 
@@ -98,6 +98,27 @@ export class PsychologistService {
 
     return this.databaseService.psychologist.delete({
       where: { id },
+    });
+  }
+
+  async findChats(id: number): Promise<Chat[]> {
+    const psychologist = await this.databaseService.psychologist.findFirst({
+      where: {
+        userId: id,
+      },
+    });
+
+    return this.databaseService.chat.findMany({
+      where: {
+        psychologistId: psychologist.id,
+      },
+      include: {
+        patient: {
+          include: {
+            profile: true,
+          },
+        },
+      },
     });
   }
 }
