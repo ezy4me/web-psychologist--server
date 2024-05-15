@@ -8,7 +8,7 @@ import { LoginDto, PsychologistRegisterDto, RegisterDto } from './dto';
 import { UserService } from '@modules/user/user.service';
 import { Tokens } from './interfaces';
 import { compareSync } from 'bcrypt';
-import { User, Token, Role } from '@prisma/client';
+import { User, Token, Role, Profile } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
 import { DatabaseService } from 'src/database/database.service';
 import { v4 } from 'uuid';
@@ -97,7 +97,14 @@ export class AuthService {
       userId: user.id,
     });
 
-    await this.profileService.create({
+    const profile: Profile = await this.profileService
+      .findByUserId(user.id)
+      .catch((err) => {
+        this.logger.error(err);
+        return null;
+      });
+
+    await this.profileService.update(profile.id, {
       name: dto.profile.name,
       birthday: dto.profile.birthday,
       description: dto.profile.description,

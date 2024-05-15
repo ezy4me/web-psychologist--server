@@ -1,4 +1,4 @@
-import { IsDateString, IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 
 export class CreateProfileDto {
   @IsString({ message: 'Name must be a string' })
@@ -10,7 +10,6 @@ export class CreateProfileDto {
   @IsString({ message: 'Gender must be a string' })
   gender: string;
 
-  @IsDateString({}, { message: 'Birthday must be a Date' })
   birthday: string;
 
   @IsString({ message: 'Description must be a string' })

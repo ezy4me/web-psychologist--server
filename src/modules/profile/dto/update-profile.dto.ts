@@ -14,7 +14,6 @@ export class UpdateProfileDto {
   gender: string;
 
   @ValidateIf((o) => o.birthday !== undefined)
-  @IsString({ message: 'Birthday must be a Date' })
   birthday: string;
 
   @ValidateIf((o) => o.description !== undefined)

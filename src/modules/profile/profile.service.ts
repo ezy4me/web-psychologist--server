@@ -24,6 +24,8 @@ export class ProfileService {
   }
 
   async create(dto: CreateProfileDto): Promise<Profile> {
+    console.log(dto);
+
     return this.databaseService.profile.create({
       data: {
         name: dto.name,
